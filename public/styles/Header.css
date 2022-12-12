@@ -1,0 +1,168 @@
+.nav-pills {
+  --bs-nav-pills-link-active-bg: var(--primary-color);
+  --bs-nav-pills-link-active-color: var(--secondary-color);
+}
+
+.nav-link {
+  --bs-nav-link-color: var(--trimary-color);
+}
+
+.flipped {
+  transform: rotateZ(180deg);
+}
+
+.hidden {
+  display: none;
+}
+
+/* Header styling */
+
+header {
+  background-color: var(--secondary-color);
+}
+
+header nav {
+  width: 100%;
+}
+
+header nav ul {
+  display: flex;
+  flex-direction: row;
+  list-style: none;
+  align-items: center;
+  margin: 0;
+  padding: 0;
+}
+
+header nav img {
+  width: 100px;
+  margin: 5px;
+}
+
+header nav > ul > li {
+  float: left;
+  margin: 0 20px;
+}
+
+header nav > ul > li:last-child {
+  margin-left: auto;
+  text-transform: capitalize;
+  order: 2;
+  user-select: none;
+}
+
+header nav > ul > li:last-child .user {
+  height: 50px;
+  display: flex;
+  align-items: center;
+  padding: 5px;
+  font-weight: bold;
+}
+
+header nav > ul > li:last-child .user:hover {
+  backdrop-filter: brightness(0.2);
+  /* background-color: red; */
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+header nav > ul > li:last-child .user:active {
+  backdrop-filter: brightness(0.4);
+}
+
+.dropdown {
+  position: absolute;
+  background-color: rgb(44, 42, 42);
+  padding: 10px;
+  border-radius: 5px;
+  right: 10px;
+}
+
+.dropdown ul {
+  display: flex;
+  flex-direction: column;
+  align-items: left;
+}
+
+.dropdown ul li {
+  padding: 10px;
+  cursor: pointer;
+  border-top: 1px white;
+  width: 100%;
+  margin: 0 20px;
+  box-sizing: initial;
+}
+
+.dropdown ul li:hover {
+  background-color: #181818;
+}
+
+button {
+  font-family: var(--font-fam);
+  background-color: var(--primary-color);
+  outline: none;
+  border: none;
+  padding: 10px;
+  border-radius: 5px;
+  cursor: pointer;
+  color: var(--secondary-color);
+  text-transform: capitalize;
+  font-size: large;
+  font-weight: bold;
+}
+
+button:hover {
+  filter: brightness(1.1);
+}
+
+button:active {
+  filter: brightness(0.8);
+}
+
+.dropdown ul li a {
+  display: block;
+  text-decoration: none;
+  color: white;
+  margin: 0;
+  padding: 0;
+  width: 100%;
+}
+
+/*Scroll wheel */
+/* width */
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  background: var(--secondary-color);
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: var(--secondary-color);
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
+
+a {
+  color: var(--primary-color);
+}
+
+img:not(#logo) {
+  max-width: 400px;
+  aspect-ratio: 1/1;
+  object-fit: cover;
+}
+
+.pfp {
+  border-radius: 999px;
+}
+
+.headerPic {
+  width: 3vw;
+}

@@ -4,9 +4,19 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Homepage</title>
+    <link rel="icon" type="image/x-icon" href="/images/favicon.ico" />
+    <link href="/styles/Header.css" rel="stylesheet" />
+    <link href="/styles/Styles.css" rel="stylesheet" />
+    <link href="/styles/Homepage.css" rel="stylesheet" />
+    <title>Song rater</title>
   </head>
+
   <body>
-    <h1>Hello world</h1>
+    <%-include('./modules/Header', {user})%>
+    <main>
+      <form method="get" action="/query">
+        <input type="search" name="query" />
+      </form>
+    </main>
   </body>
 </html>
