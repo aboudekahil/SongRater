@@ -16,6 +16,7 @@ router.get('/editProfile', userController.editProfilePage);
 router.post('/registerUser', userController.createUser);
 router.post('/signOut', userController.userSignOut);
 router.post('/signIn', userController.userSignIn);
+router.post('/editProfile', userController.updateUser);
 
 // exporting
 module.exports = router;

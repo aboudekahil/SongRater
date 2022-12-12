@@ -36,9 +36,9 @@
               <a href="/editProfile">Edit Profile</a>
             </li>
 
-            <%if(parseInt(user.user_is_artist)){%>
+            <%if(!(JSON.stringify(user.isArtist) === "{}")){%>
             <li>
-              <a href="/artists/<%=user.StageName%>">Artist Profile</a>
+              <a href="/artists/<%=user.isArtist.StageName%>">Artist Profile</a>
             </li>
             <%}%>
 
@@ -57,7 +57,6 @@
   let dropdown = document.querySelector('.user');
 
   dropdown.addEventListener('click', (e) => {
-    // console.log(dropdown.childNodes);
     dropdown.querySelector('svg').classList.toggle('flipped');
     document.querySelector('.dropdown').classList.toggle('hidden');
   });

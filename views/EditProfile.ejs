@@ -32,7 +32,7 @@
                 type="text"
                 id="userName"
                 placeholder="Your Name"
-                name="name"
+                name="FullName"
                 class="form-control"
                 value="<%= user.FullName %>"
                 required
@@ -44,7 +44,7 @@
                 type="email"
                 placeholder="Your Email"
                 id="userEmail"
-                name="email"
+                name="Email"
                 class="form-control"
                 value="<%=user.Email%>"
                 required
@@ -55,7 +55,7 @@
               <input
                 type="password"
                 id="userPassword"
-                name="password"
+                name="Password"
                 placeholder="Your Password"
                 class="form-control"
                 value="<%=user.Password%>"
@@ -66,13 +66,13 @@
               <label for="userCountry">Country</label>
               <select
                 class="form-control"
-                name="country"
+                name="Country"
                 id="userCountry"
                 required
               >
                 <% for(let country of countries){ %>
-                <option value="<%= country.country_id %>" <%=(user.user_country===country.country_id)?"selected":""%>>
-                  <%=country.country_name%> (<%= country.country_abbr%>)
+                <option value="<%= country.Name %>" <%=(user.Country===country.Name)?"selected":""%>>
+                  <%=country.Name%> (<%= country.Abbr%>)
                 </option>
                 <%}%>
               </select>
@@ -82,9 +82,9 @@
               <input
                 type="date"
                 id="userDob"
-                name="dob"
+                name="DOB"
                 class="form-control"
-                value="<%= user.user_dob%>"
+                value="<%= new Date(user.DOB).toISOString().split('T')[0] %>"
                 required
               />
             </div>
@@ -94,10 +94,10 @@
               <input
                 type="text"
                 id="artistStageName"
-                name="stageName"
+                name="StageName"
                 class="form-control"
                 placeholder="Your Stage Name"
-                value="<%=user.artist_stagename%>"
+                value="<%=user.isArtist.StageName%>"
                 required
               />
             </div>

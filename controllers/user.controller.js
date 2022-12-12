@@ -24,7 +24,7 @@ exports.createUser = async (req, res) => {
     DOB,
     Avatar,
     isArtist,
-    stageName,
+    StageName,
   } = req.body;
 
   const user = new User({
@@ -35,7 +35,7 @@ exports.createUser = async (req, res) => {
     DOB,
     Avatar:
       Avatar || `https://ui-avatars.com/api/name=${FullName}&background=random`,
-    isArtist: isArtist ? { stageName } : undefined,
+    isArtist: isArtist ? { StageName } : undefined,
   });
 
   try {
@@ -51,13 +51,7 @@ exports.createUser = async (req, res) => {
       httpOnly: true,
     });
 
-    res
-      .status(201)
-      .json({
-        status: 201,
-        message: 'Create successfully',
-      })
-      .redirect('/');
+    res.status(201).redirect('/');
   } catch (error) {
     if (error.code === 11000) {
       res.status(409).send({
@@ -135,7 +129,7 @@ exports.editProfilePage = async (req, res) => {
 
     const user = await getLoggedInUser(req);
     const countries = await Country.find({});
-    const isArtist = !!user.isArtist;
+    const isArtist = !(JSON.stringify(user.isArtist) === '{}'); // check if the user is an artist
 
     res.status(200).render('EditProfile', { user, countries, isArtist });
   } catch (error) {
@@ -278,7 +272,7 @@ exports.updateUser = async (req, res) => {
     user.DOB = DOB;
 
     if (user.isArtist) {
-      user.StageName = StageName;
+      user.isArtist.StageName = StageName;
     }
 
     await user.save();

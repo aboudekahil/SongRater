@@ -24,7 +24,6 @@ exports.getHomePage = async (req, res) => {
         message: `user not found with id ${req.cookies.uid}. Please refresh.`,
       });
     }
-
     res.render('Homepage', { user });
   } catch (err) {
     // Handle any error that occurred in the query
