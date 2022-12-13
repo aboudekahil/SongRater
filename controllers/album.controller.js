@@ -1,21 +1,22 @@
-const Album = require('../models/album.model');
-const getLoggedInUser = require('../utils/getLoggedInUser');
 const express = require('express');
+const getLoggedInUser = require('../utils/getLoggedInUser');
+const Album = require('../models/album.model');
 const Song = require('../models/song.model');
+const Review = require('../models/review.model');
 
 /**
  * @async
  * @function
- * renders the AddSong page to the logged in user
+ * renders the AddAlbum page to the logged in user
  * if they are an artist.
  *
  * @param {express.Request} req - Express request object
  * @param {express.Response} res - Express response object
  *
- * @returns {undefined} - Render the add song page or displays
+ * @returns {undefined} - Render the add album page or displays
  * any error if they occur
  */
-exports.addSongPage = async (req, res) => {
+exports.addAlbumPage = async (req, res) => {
   try {
     const user = await getLoggedInUser(req);
 
@@ -37,9 +38,7 @@ exports.addSongPage = async (req, res) => {
       });
     }
 
-    const albums = await Album.find({ Artist: user.isArtist.StageName });
-
-    res.status(200).render('AddSong', { user, albums, isUpdate: false });
+    res.status(200).render('AddAlbum', { user, isUpdate: false });
   } catch (error) {
     console.error(error);
     res.status(500).send({ status: 500, message: 'Internal server error' });
@@ -49,16 +48,16 @@ exports.addSongPage = async (req, res) => {
 /**
  * @async
  * @function
- * renders the UpdateSong page to the logged in user
+ * renders the UpdateAlbum page to the logged in user
  * if they are an artist.
  *
  * @param {express.Request} req - Express request object
  * @param {express.Response} res - Express response object
  *
- * @returns {undefined} - Render the update song page or displays
+ * @returns {undefined} - Render the update album page or displays
  * any error if they occur
  */
-exports.updateSongPage = async (req, res) => {
+exports.updateAlbumPage = async (req, res) => {
   const { Name } = req.query;
 
   try {
@@ -68,8 +67,8 @@ exports.updateSongPage = async (req, res) => {
     if (user === null) {
       res.clearCookie('uid');
 
-      return res.status(404).send({
-        status: 404,
+      return res.status(500).send({
+        status: 500,
         message: `User not found with id ${req.cookies.uid}. Please refresh.`,
       });
     }
@@ -82,18 +81,20 @@ exports.updateSongPage = async (req, res) => {
       });
     }
 
-    const albums = await Album.find({ Artist: user.isArtist.StageName });
-    const song = await Song.findOne({ Name, Artist: user.isArtist.StageName });
+    const album = await Album.findOne({
+      Name,
+      Artist: user.isArtist.StageName,
+    });
 
-    // No song of such name
-    if (!song) {
+    // no album of such name
+    if (!album) {
       return res.status(404).send({
         status: 404,
-        message: `Song not found with name ${Name}.`,
+        message: 'Album not found in your discography',
       });
     }
 
-    res.status(200).render('AddSong', { user, albums, song, isUpdate: true });
+    res.status(200).render('AddAlbum', { user, album, isUpdate: true });
   } catch (error) {
     console.error(error);
     res.status(500).send({ status: 500, message: 'Internal server error' });
@@ -103,16 +104,17 @@ exports.updateSongPage = async (req, res) => {
 /**
  * @async
  * @function
- * Creates a song document
+ * Creates an album document
  *
  * @param {express.Request} req - Express request object
  * @param {express.Response} res - Express response object
  *
- * @returns {undefined} - Creates a song document or displays
+ * @returns {undefined} - Creates a album document or displays
  * any error if they occur
  */
-exports.createSong = async (req, res) => {
-  const { Name, Album, ReleaseDate, Length } = req.body;
+exports.createAlbum = async (req, res) => {
+  const { Name, ReleaseDate } = req.body;
+
   try {
     const user = await getLoggedInUser(req);
 
@@ -134,95 +136,33 @@ exports.createSong = async (req, res) => {
       });
     }
 
-    const song = new Song({
+    const album = new Album({
       Name,
+      ReleaseDate,
       Artist: user.isArtist.StageName,
-      Album,
-      ReleaseDate: new Date(ReleaseDate),
-      Length,
       Cover: `https://ui-avatars.com/api/name=${Name}&background=random`,
     });
 
-    await song.save();
-    res.status(201).redirect(`/artists/${user.isArtist.StageName}`);
+    await album.save();
+    res.status(200).redirect(`/artists/${user.isArtist.StageName}`);
   } catch (error) {
     console.error(error);
-    res.status(500).send({ status: 500, message: 'Internal server error.' });
+    res.status(505).send({ status: 500, message: 'Internal server error.' });
   }
 };
 
 /**
  * @async
  * @function
- * Updates a song document
+ * Delete an album document
  *
  * @param {express.Request} req - Express request object
  * @param {express.Response} res - Express response object
  *
- * @returns {undefined} - Updates a song document or displays
+ * @returns {undefined} - Delete an album document or displays
  * any error if they occur
  */
-exports.updateSong = async (req, res) => {
-  const { Name, Album, ReleaseDate, Length } = req.body;
-  try {
-    const user = await getLoggedInUser(req);
-
-    // bad session id
-    if (user === null) {
-      res.clearCookie('uid');
-
-      return res.status(500).send({
-        status: 500,
-        message: `User not found with id ${req.cookies.uid}. Please refresh.`,
-      });
-    }
-
-    // Not an artist
-    if (!user.isArtist || JSON.stringify(user.isArtist) === '{}') {
-      return res.status(403).send({
-        status: 403,
-        message: 'Forbidden request, you are not an artist.',
-      });
-    }
-
-    let song = await Song.findOne({
-      Name,
-      Artist: user.isArtist.StageName,
-    });
-
-    // No song of such name
-    if (!song) {
-      return res.status(404).send({
-        status: 404,
-        message: `Song not found with name ${Name}.`,
-      });
-    }
-
-    song.Name = Name;
-    song.Album = Album;
-    song.ReleaseDate = ReleaseDate;
-    song.Length = Length;
-
-    await song.save();
-    res.status(201).redirect(`/artists/${user.isArtist.StageName}`);
-  } catch (error) {
-    console.error(error);
-    res.status(500).send({ status: 500, message: 'Internal server error.' });
-  }
-};
-
-/**
- * @async
- * @function
- * Delete a song document
- *
- * @param {express.Request} req - Express request object
- * @param {express.Response} res - Express response object
- *
- * @returns {undefined} - Delete a song document or displays
- * any error if they occur
- */
-exports.deleteSong = async (req, res) => {
+exports.deleteAlbum = async (req, res) => {
   const { Name } = req.body;
 
   try {
@@ -246,17 +186,126 @@ exports.deleteSong = async (req, res) => {
       });
     }
 
-    let song = await Song.findOne({ Artist: user.isArtist.StageName, Name });
+    let album = await Album.findOne({ Artist: user.isArtist.StageName, Name });
 
-    // No such song
-    if (!song) {
-      return res
-        .status(404)
-        .send({ status: 404, message: 'Song not found in your discography' });
+    // No such album
+    if (!album) {
+      return res.status(404).send({ status: 404, message: 'Album not found.' });
     }
 
-    await song.remove();
+    await album.remove();
     res.status(200).redirect(`/artists/${user.isArtist.StageName}`);
+  } catch (error) {
+    console.error(error);
+    res.status(500).send({ status: 500, message: 'Internal server error.' });
+  }
+};
+
+/**
+ * @async
+ * @function
+ * Updates an album document
+ *
+ * @param {express.Request} req - Express request object
+ * @param {express.Response} res - Express response object
+ *
+ * @returns {undefined} - Updates an album document or displays
+ * any error if they occur
+ */
+exports.updateAlbum = async (req, res) => {
+  const { Name, ReleaseDate } = req.body;
+  try {
+    const user = await getLoggedInUser(req);
+
+    // bad session id
+    if (user === null) {
+      res.clearCookie('uid');
+
+      return res.status(500).send({
+        status: 500,
+        message: `User not found with id ${req.cookies.uid}. Please refresh.`,
+      });
+    }
+
+    // Not an artist
+    if (!user.isArtist || JSON.stringify(user.isArtist) === '{}') {
+      return res.status(403).send({
+        status: 403,
+        message: 'Forbidden request, you are not an artist.',
+      });
+    }
+
+    let album = await Album.findOne({
+      Name,
+      Artist: user.isArtist.StageName,
+    });
+
+    // No album of such name
+    if (!album) {
+      return res.status(404).send({
+        status: 404,
+        message: `Album not found with name ${Name}.`,
+      });
+    }
+
+    album.Name = Name;
+    album.ReleaseDate = ReleaseDate;
+
+    await album.save();
+    res.status(201).redirect(`/artists/${user.isArtist.StageName}`);
+  } catch (error) {
+    console.error(error);
+    res.status(500).send({ status: 500, message: 'Internal server error.' });
+  }
+};
+
+/**
+ * @async
+ * @function
+ * Renders the album page
+ *
+ * @param {express.Request} req - Express request object
+ * @param {express.Response} res - Express response object
+ *
+ * @returns {undefined} - Renders the album page or displays
+ * any error if they occur
+ */
+exports.getAlbum = async (req, res) => {
+  const { StageName, Name } = req.params;
+
+  try {
+    const user = await getLoggedInUser(req);
+
+    // bad session id
+    if (user === null) {
+      res.clearCookie('uid');
+
+      return res.status(500).send({
+        status: 500,
+        message: `User not found with id ${req.cookies.uid}. Please refresh.`,
+      });
+    }
+
+    const album = await Album.findOne({ Name, Artist: StageName });
+
+    if (!album) {
+      return res
+        .status(404)
+        .send({ status: 404, message: `No album with name ${Name}` });
+    }
+
+    const songs = await Song.find({ Name, Artist: StageName });
+    const reviews = await Review.find({
+      Song: { $in: songs.map((song) => song.Name) },
+    });
+
+    const avgStars =
+      reviews.reduce((prev, currSong) => prev + currSong.Stars, 0) /
+      reviews.length;
+
+    res
+      .status(200)
+      .render('Album', { user, StageName, album, songs, avgStars });
   } catch (error) {
     console.error(error);
     res.status(500).send({ status: 500, message: 'Internal server error.' });

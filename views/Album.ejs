@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/x-icon" href="/icons/favicon.ico" />
+    <link href="/styles/Header.css" rel="stylesheet" />
+    <link href="/styles/Styles.css" rel="stylesheet" />
+    <title><%= album.Name %></title>
+  </head>
+
+  <body>
+    <%-include('./modules/Header', {user})%>
+    <main>
+      <div class="d-flex">
+        <div>
+          <img src="<%= album.Cover %>" />
+          <p>
+            <%=album.Name%> -
+            <a href="/artists/<%=StageName%>"><%=StageName%></a>
+          </p>
+          <p><%=album.ReleaseDate.toLocaleDateString()%></p>
+          <p><%= parseFloat(avgStars || 0).toFixed(2) %>/5</p>
+        </div>
+        <div>
+          <% if(!songs.length){ %>
+          <h2>No songs in this album yet</h2>
+          <%}%> <% for( let song of songs ) { %>
+          <div>
+            <p>
+              <a href="/artists/<%=StageName%>/songs/<%= song.Name %>"
+                ><%= song.Name %></a
+              >-<a href="/artists/<%=StageName%>"
+                ><%=StageName%></a
+              >
+            </p>
+            <p><%= song.Length %></p>
+          </div>
+          <% } %>
+        </div>
+      </div>
+    </main>
+  </body>
+</html>

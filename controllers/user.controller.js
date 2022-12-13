@@ -316,13 +316,18 @@ exports.getDiscography = async (req, res) => {
 
     const artist = await User.findOne({ isArtist: { StageName: StageName } });
     if (!artist) {
-      res.status(404).send({ status: 404, message: 'Artist not found.' });
+      return res
+        .status(404)
+        .send({ status: 404, message: 'Artist not found.' });
     }
 
     const songs = await Song.find({ Artist: StageName });
     const albums = await Album.find({ Artist: StageName });
 
-    const isThisArtist = user.isArtist.StageName === artist.isArtist.StageName;
+    const isThisArtist =
+      user &&
+      JSON.stringify(user.isArtist) !== '{}' &&
+      user.isArtist.StageName === artist.isArtist.StageName;
 
     res
       .status(200)

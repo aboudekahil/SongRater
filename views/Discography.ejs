@@ -33,7 +33,7 @@
               <img src="<%=song.Cover%>" />
               <a
                 href="/artists/<%=artist.isArtist.StageName%>/songs/<%=song.Name%>"
-                ><%=song.song_name%></a
+                ><%=song.Name%></a
               >
               <%if(isThisArtist){%>
               <a href="/updateSong?Name=<%=song.Name%>"
@@ -53,7 +53,7 @@
               <img src="<%=album.Cover%>" />
               <a
                 href="/artists/<%=artist.isArtist.StageName%>/albums/<%=album.Name%>"
-                ><%=album.album_name%></a
+                ><%=album.Name%></a
               >
               <%if(isThisArtist){%>
               <a href="/updateAlbum?Name=<%=album.Name%>"
