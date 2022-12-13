@@ -305,7 +305,7 @@ exports.getSong = async (req, res) => {
     let userReview;
     // get user review if it exists
     if (user) {
-      userReview = reviews.find((review) => review.User === user.Name);
+      userReview = reviews.find((review) => review.User.Name === user.FullName);
     }
 
     res

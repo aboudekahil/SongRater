@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/x-icon" href="/images/favicon.ico" />
+    <link href="/styles/Header.css" rel="stylesheet" />
+    <link href="/styles/Styles.css" rel="stylesheet" />
+    <link href="/styles/Search.css" rel="stylesheet" />
+    <title>Results for <%= query %></title>
+  </head>
+
+  <body>
+    <%-include('./modules/Header', {user}) %>
+    <main>
+      <form
+        class="col-12 align-self-center w-50 col-lg-auto mb-3 mb-lg-0 me-lg-3"
+        method="get"
+        action="/query"
+      >
+        <input
+          type="search"
+          class="form-control form-control-dark"
+          placeholder="Search..."
+          aria-label="Search"
+          name="query"
+          value="<%=query%>"
+        />
+      </form>
+      <% if(foundAny){ %>
+      <div class="results">
+        <div class="division">
+          <h1>Songs</h1>
+          <% for(let song of results.songs) { %>
+          <div>
+            <img src="<%=song.Cover%>" />
+            <a href="/artists/<%=song.Artist%>/songs/<%=song.Name%>">
+              <h1><%=song.Name%></h1>
+            </a>
+          </div>
+          <%}%>
+        </div>
+        <div class="division">
+          <h1>Albums</h1>
+          <% for(let album of results.albums) { %>
+          <div>
+            <img src="<%=album.Cover%>" />
+            <a href="/artists/<%=album.Artist%>/albums/<%=album.Name%>">
+              <h1><%=album.Name%></h1>
+            </a>
+          </div>
+          <%}%>
+        </div>
+        <div class="division">
+          <h1>Artists</h1>
+          <% for(let artist of results.artists) { %>
+          <div>
+            <h1>
+              <a href="/artists/<%=artist.isArtist.StageName%>"
+                ><%=artist.StageName%></a
+              >
+            </h1>
+            <h2>
+              <a href="/profiles/<%=artist.Name%>"><%=artist.Name%></a>
+            </h2>
+          </div>
+          <%}%>
+        </div>
+      </div>
+      <%} else {%>
+      <div class="noFound">
+        <h1>No results found</h1>
+      </div>
+      <%}%>
+    </main>
+  </body>
+</html>

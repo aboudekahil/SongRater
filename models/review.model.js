@@ -11,20 +11,24 @@ const reviewSchema = new mongoose.Schema(
       required: true,
     },
     Song: {
-      type: String,
-      required: true,
-    },
-    Artist: {
-      type: String,
-      required: true,
+      Name: {
+        type: String,
+        required: true,
+      },
+      Artist: {
+        type: String,
+        required: true,
+      },
     },
     User: {
-      type: String,
-      required: true,
-    },
-    Avatar: {
-      type: String,
-      required: true,
+      Avatar: {
+        type: String,
+        required: true,
+      },
+      Name: {
+        type: String,
+        required: true,
+      },
     },
   },
   { timestamps: true }

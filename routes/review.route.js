@@ -5,11 +5,11 @@ const router = express.Router();
 
 // Controller
 // ----------------------------------------------------------------------------
-const homeController = require('../controllers/home.controller');
+const reviewController = require('../controllers/review.controller');
 
-// GET Requests
-router.get('/', homeController.getHomePage);
-router.get('/query', homeController.query);
+// POST Requests
+router.post('/addReview', reviewController.createReview);
+router.post('/updateReview', reviewController.updateReview);
 
 // exporting
 module.exports = router;
