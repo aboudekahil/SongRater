@@ -1,7 +1,9 @@
 const express = require('express');
 const sessionManager = require('../config/session.config');
-const User = require('../models/user.module');
-const Country = require('../models/country.module');
+const User = require('../models/user.model');
+const Country = require('../models/country.model');
+const Song = require('../models/song.model');
+const Album = require('../models/album.model');
 const getLoggedInUser = require('../utils/getLoggedInUser');
 
 /**
@@ -281,5 +283,52 @@ exports.updateUser = async (req, res) => {
   } catch (error) {
     console.error(error);
     res.status(500).send({ status: 500, message: 'Internal sevrer error.' });
+  }
+};
+
+/**
+ * @async
+ * @function
+ * Displays the discography page of an artist
+ *
+ * @param {express.Request} req - The request object containing the updated
+ * artist Name.
+ * @param {express.Response} res - The response object
+ *
+ * @returns {undefined} - This function will render the artist discography page
+ * and displays any errors if they occur
+ */
+exports.getDiscography = async (req, res) => {
+  const { StageName } = req.params;
+
+  try {
+    const user = await getLoggedInUser(req);
+
+    // bad session id
+    if (user === null) {
+      res.clearCookie('uid');
+
+      return res.status(500).send({
+        status: 500,
+        message: `user not found with id ${req.cookies.uid}. Please refresh.`,
+      });
+    }
+
+    const artist = await User.findOne({ isArtist: { StageName: StageName } });
+    if (!artist) {
+      res.status(404).send({ status: 404, message: 'Artist not found.' });
+    }
+
+    const songs = await Song.find({ Artist: StageName });
+    const albums = await Album.find({ Artist: StageName });
+
+    const isThisArtist = user.isArtist.StageName === artist.isArtist.StageName;
+
+    res
+      .status(200)
+      .render('Discography', { user, artist, songs, albums, isThisArtist });
+  } catch (error) {
+    console.error(error);
+    res.status(500).send({ status: 500, message: 'Internal server error.' });
   }
 };

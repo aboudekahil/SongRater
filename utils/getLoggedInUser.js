@@ -1,6 +1,6 @@
 const express = require('express');
 const sessionManager = require('../config/session.config');
-const User = require('../models/user.module');
+const User = require('../models/user.model');
 
 /**
  * @async

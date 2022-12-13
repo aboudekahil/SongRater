@@ -11,6 +11,7 @@ const userController = require('../controllers/user.controller');
 router.get('/join', userController.joinPage);
 router.get('/profiles/:FullName', userController.getProfile);
 router.get('/editProfile', userController.editProfilePage);
+router.get('/artists/:StageName', userController.getDiscography);
 
 // POST Requests
 router.post('/registerUser', userController.createUser);

@@ -84,7 +84,7 @@
                 id="userDob"
                 name="DOB"
                 class="form-control"
-                value="<%= new Date(user.DOB).toISOString().split('T')[0] %>"
+                value="<%= user.DOB.toISOString().split('T')[0] %>"
                 required
               />
             </div>

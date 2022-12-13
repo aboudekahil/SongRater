@@ -37,7 +37,7 @@ const userSchema = new mongoose.Schema(
       required: true,
     },
     isArtist: {
-      StageName: String,
+      StageName: { type: String, unique: true },
     },
   },
   { timestamps: true }

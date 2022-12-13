@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/x-icon" href="/icons/favicon.ico" />
+    <link href="/styles/Header.css" rel="stylesheet" />
+    <link href="/styles/Styles.css" rel="stylesheet" />
+    <link href="/styles/Artist.css" rel="stylesheet" />
+    <title><%= artist.isArtist.StageName%></title>
+  </head>
+
+  <body>
+    <%-include('./modules/Header', {user})%>
+    <main>
+      <div class="artistHeader">
+        <h1><%=artist.isArtist.StageName%> discography</h1>
+        <%if(isThisArtist){%>
+        <div>
+          <a href="/addSong">Add Song</a>
+          <a href="/addAlbum">Add Album</a>
+        </div>
+        <%}%>
+      </div>
+      <div>
+        <%if(songs.length !== 0 || albums.length !== 0){%>
+        <div>
+          <h2>Songs</h2>
+          <ul>
+            <% for(song of songs) {%>
+            <li>
+              <img src="<%=song.Cover%>" />
+              <a
+                href="/artists/<%=artist.isArtist.StageName%>/songs/<%=song.Name%>"
+                ><%=song.song_name%></a
+              >
+              <%if(isThisArtist){%>
+              <a href="/updateSong?Name=<%=song.Name%>"
+                ><button>Update</button></a
+              >
+              <button data-name="<%=song.Name%>" class="delS">Delete</button>
+              <%}%>
+            </li>
+            <%}%>
+          </ul>
+        </div>
+        <div>
+          <h2>Albums</h2>
+          <ul>
+            <% for(album of albums) {%>
+            <li>
+              <img src="<%=album.Cover%>" />
+              <a
+                href="/artists/<%=artist.isArtist.StageName%>/albums/<%=album.Name%>"
+                ><%=album.album_name%></a
+              >
+              <%if(isThisArtist){%>
+              <a href="/updateAlbum?Name=<%=album.Name%>"
+                ><button>Update</button></a
+              >
+              <button data-name="<%=album.Name%>" class="delA">Delete</button>
+              <%}%>
+            </li>
+            <%}%>
+          </ul>
+        </div>
+        <%}else{%>
+        <h1>No songs or albums from this artist yet</h1>
+        <%}%>
+      </div>
+    </main>
+    <script defer>
+      let delS = (e) => {
+        (async () => {
+          const rawResponse = await fetch('/api/deleteSong', {
+            method: 'POST',
+            headers: {
+              Accept: 'application/json',
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              Name: e.target.dataset.name,
+            }),
+          });
+        })();
+
+        location.reload();
+      };
+
+      let delA = (e) => {
+        (async () => {
+          const rawResponse = await fetch('/api/deleteAlbum', {
+            method: 'POST',
+            headers: {
+              Accept: 'application/json',
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              Name: e.target.dataset.name,
+            }),
+          });
+        })();
+
+        location.reload();
+      };
+
+      document.querySelectorAll('.delS').forEach((button) => {
+        button.addEventListener('click', delS);
+      });
+      document.querySelectorAll('.delA').forEach((button) => {
+        button.addEventListener('click', delA);
+      });
+    </script>
+  </body>
+</html>

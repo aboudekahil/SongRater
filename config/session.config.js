@@ -1,4 +1,4 @@
-const SessionModel = require('../models/session.module');
+const SessionModel = require('../models/session.model');
 const crypto = require('crypto');
 
 class CookieSessionManager {
