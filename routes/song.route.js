@@ -10,6 +10,7 @@ const songController = require('../controllers/song.controller');
 // GET Requests
 router.get('/addSong', songController.addSongPage);
 router.get('/updateSong', songController.updateSongPage);
+router.get('/artists/:StageName/songs/:Name', songController.getSong);
 
 // POST Requests
 router.post('/addSong', songController.createSong);
