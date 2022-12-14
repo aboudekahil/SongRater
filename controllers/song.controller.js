@@ -4,6 +4,7 @@ const getLoggedInUser = require('../utils/getLoggedInUser');
 const Album = require('../models/album.model');
 const Song = require('../models/song.model');
 const Review = require('../models/review.model');
+const axios = require('axios').default;
 
 /**
  * @async
@@ -292,7 +293,10 @@ exports.getSong = async (req, res) => {
       });
     }
 
-    const song = await Song.findOne({ Name, Artist: StageName });
+    const song = await Song.findOne({
+      Name: Name,
+      Artist: StageName,
+    });
 
     if (!song) {
       return res.status(404).send({
@@ -301,7 +305,10 @@ exports.getSong = async (req, res) => {
       });
     }
 
-    const reviews = await Review.find({ Song, Artist: StageName });
+    const reviews = await Review.find({
+      'Song.Name': Name,
+      'Song.Artist': StageName,
+    });
 
     let userReview;
     // get user review if it exists
@@ -309,16 +316,14 @@ exports.getSong = async (req, res) => {
       userReview = reviews.find((review) => review.User.Name === user.FullName);
     }
 
-    res
-      .status(200)
-      .render('Song', {
-        user,
-        StageName,
-        song,
-        reviews,
-        userReview,
-        formatTime: toHHMMSS,
-      });
+    res.status(200).render('Song', {
+      user,
+      StageName,
+      song,
+      reviews,
+      userReview,
+      formatTime: toHHMMSS,
+    });
   } catch (error) {
     console.error(error);
     res.status(500).send({ status: 500, message: 'Internal server error.' });
@@ -366,6 +371,60 @@ exports.uploadCover = async (req, res) => {
 
     await song.save();
     res.redirect(`/artists/${song.Artist}/songs/${song.Name}`);
+  } catch (error) {
+    console.error(error);
+    res.status(500).send({ status: 500, message: 'Internal server error.' });
+  }
+};
+
+exports.getFromLastFm = async (req, res) => {
+  const { Name } = req.body;
+  try {
+    const user = await getLoggedInUser(req);
+
+    // bad session id
+    if (user === null) {
+      res.clearCookie('uid');
+
+      return res.status(500).send({
+        status: 500,
+        message: `User not found with id ${req.cookies.uid}. Please refresh.`,
+      });
+    }
+
+    // Not an artist
+    if (!user.isArtist || JSON.stringify(user.isArtist) === '{}') {
+      return res.status(403).send({
+        status: 403,
+        message: 'Forbidden request, you are not an artist.',
+      });
+    }
+
+    // make a GET request to the API
+    const response = await axios.get(
+      `https://ws.audioscrobbler.com/2.0/?method=track.getInfo&api_key=${process.env.LAST_FM}&artist=${user.isArtist.StageName}&track=${Name}&format=json`
+    );
+    // parse the response body as JSON
+    const data = response.data;
+
+    let match = data.track;
+
+    let cover = match.album;
+    console.log(cover);
+
+    let song = new Song({
+      Name: match.name,
+      Artist: user.isArtist.StageName,
+      Length: Math.floor(match.duration / 1000),
+      Links: [match.url],
+      ReleaseDate: new Date(),
+      Cover: cover
+        ? cover.image.at(-1)['#text']
+        : `https://ui-avatars.com/api/name=${match.name}&background=random`,
+    });
+
+    await song.save();
+    res.redirect(`/artists/${user.isArtist.StageName}/songs/${match.name}`);
   } catch (error) {
     console.error(error);
     res.status(500).send({ status: 500, message: 'Internal server error.' });
