@@ -28,7 +28,7 @@
           <%= song.Name %> -
           <a href="/artists/<%= StageName %>"><%= StageName %></a>
         </h3>
-        <small><%=song.Length%></small>
+        <small><%=formatTime(song.Length)%></small>
         <br />
         <time datetime="<%= song.ReleaseDate.toLocaleDateString()%>"
           ><%=song.ReleaseDate.toLocaleDateString() %></time

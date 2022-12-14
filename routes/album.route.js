@@ -2,6 +2,7 @@
 // ----------------------------------------------------------------------------
 const express = require('express');
 const router = express.Router();
+const upload = require('../config/multer.config');
 
 // Controller
 // ----------------------------------------------------------------------------
@@ -16,6 +17,11 @@ router.get('/artists/:StageName/albums/:Name', albumController.getAlbum);
 router.post('/addAlbum', albumController.createAlbum);
 router.post('/deleteAlbum', albumController.deleteAlbum);
 router.post('/updateAlbum', albumController.updateAlbum);
+router.post(
+  '/uploadAlbumCover',
+  upload.single('cover'),
+  albumController.uploadCover
+);
 
 // exporting
 module.exports = router;

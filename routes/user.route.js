@@ -2,6 +2,7 @@
 // ----------------------------------------------------------------------------
 const express = require('express');
 const router = express.Router();
+const upload = require('../config/multer.config');
 
 // Controller
 // ----------------------------------------------------------------------------
@@ -18,6 +19,7 @@ router.post('/registerUser', userController.createUser);
 router.post('/signOut', userController.userSignOut);
 router.post('/signIn', userController.userSignIn);
 router.post('/editProfile', userController.updateUser);
+router.post('/uploadPfp', upload.single('avatar'), userController.pfpUpload);
 
 // exporting
 module.exports = router;

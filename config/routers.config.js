@@ -23,14 +23,14 @@ for (const routeFile of routesDir) {
 
   for (const routeProperties of route.stack) {
     let path = routeProperties.route.path.slice(1); // remove the `/` at the beginning of the path
-    let controller = routeProperties.route.stack[0].handle;
+    let handles = routeProperties.route.stack.map(layer => layer.handle);
     let method = routeProperties.route.stack[0].method; // get or post
 
     if (method === 'get') {
-      router.get(`/${path}`, controller);
+      router.get(`/${path}`, ...handles);
     } else {
       // method === post or put or other
-      router.post(`/api/${path}`, controller);
+      router.post(`/api/${path}`, ...handles);
     }
   }
 }

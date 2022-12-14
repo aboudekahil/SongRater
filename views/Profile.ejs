@@ -19,7 +19,7 @@
       <h2><%= profile.Email%></h2>
 
       <%if(user.FullName === profile.FullName){%>
-      <form action="/uploadPfp" method="post" enctype="multipart/form-data">
+      <form action="/api/uploadPfp" method="post" enctype="multipart/form-data">
         <label for="avatar">Avatar</label>
         <input
           type="file"

@@ -1,8 +1,9 @@
 const express = require('express');
+const toHHMMSS = require('../utils/toHHMMSS');
+const getLoggedInUser = require('../utils/getLoggedInUser');
 const Album = require('../models/album.model');
 const Song = require('../models/song.model');
 const Review = require('../models/review.model');
-const getLoggedInUser = require('../utils/getLoggedInUser');
 
 /**
  * @async
@@ -310,7 +311,61 @@ exports.getSong = async (req, res) => {
 
     res
       .status(200)
-      .render('Song', { user, StageName, song, reviews, userReview });
+      .render('Song', {
+        user,
+        StageName,
+        song,
+        reviews,
+        userReview,
+        formatTime: toHHMMSS,
+      });
+  } catch (error) {
+    console.error(error);
+    res.status(500).send({ status: 500, message: 'Internal server error.' });
+  }
+};
+
+exports.uploadCover = async (req, res) => {
+  const { Name } = req.query;
+  try {
+    if (!req.cookies.uid) {
+      res.status(400).send('Bad request.');
+      return;
+    }
+
+    let user = await getLoggedInUser(req);
+
+    // bad session id
+    if (user === null) {
+      res.clearCookie('uid');
+
+      return res.status(500).send({
+        status: 500,
+        message: `user not found with id ${req.cookies.uid}. Please refresh.`,
+      });
+    }
+
+    // Not an artist
+    if (!user.isArtist || JSON.stringify(user.isArtist) === '{}') {
+      return res.status(403).send({
+        status: 403,
+        message: 'Forbidden request, you are not an artist.',
+      });
+    }
+
+    let song = await Song.findOne({ Name, Artist: user.isArtist.StageName });
+    // No song of such name
+    if (!song) {
+      return res.status(404).send({
+        status: 404,
+        message: `Song not found with name ${Name}.`,
+      });
+    }
+
+    song.Cover = `/uploads/${req.file.filename}`;
+
+    await song.save();
+    res.redirect(`/artists/${song.Artist}/songs/${song.Name}`);
   } catch (error) {
     console.error(error);
     res.status(500).send({ status: 500, message: 'Internal server error.' });

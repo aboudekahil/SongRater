@@ -1,5 +1,6 @@
 const express = require('express');
 const getLoggedInUser = require('../utils/getLoggedInUser');
+const toHHMMSS = require('../utils/toHHMMSS');
 const Album = require('../models/album.model');
 const Song = require('../models/song.model');
 const Review = require('../models/review.model');
@@ -294,18 +295,77 @@ exports.getAlbum = async (req, res) => {
         .send({ status: 404, message: `No album with name ${Name}` });
     }
 
-    const songs = await Song.find({ Name, Artist: StageName });
-    const reviews = await Review.find({
-      Song: { $in: songs.map((song) => song.Name) },
-    });
+    const songs = await Song.find({ Album: Name, Artist: StageName });
 
+    const reviews = await Review.find({
+      'Song.Name': { $in: songs.map((song) => song.Name) },
+    });
     const avgStars =
       reviews.reduce((prev, currSong) => prev + currSong.Stars, 0) /
       reviews.length;
 
     res
       .status(200)
-      .render('Album', { user, StageName, album, songs, avgStars });
+      .render('Album', { user, StageName, album, songs, avgStars, formatTime: toHHMMSS });
+  } catch (error) {
+    console.error(error);
+    res.status(500).send({ status: 500, message: 'Internal server error.' });
+  }
+};
+
+exports.uploadCover = async (req, res) => {
+  const { Name } = req.query;
+  try {
+    if (!req.cookies.uid) {
+      res.status(400).send('Bad request.');
+      return;
+    }
+
+    let user = await getLoggedInUser(req);
+
+    // bad session id
+    if (user === null) {
+      res.clearCookie('uid');
+
+      return res.status(500).send({
+        status: 500,
+        message: `user not found with id ${req.cookies.uid}. Please refresh.`,
+      });
+    }
+
+    // Not an artist
+    if (!user.isArtist || JSON.stringify(user.isArtist) === '{}') {
+      return res.status(403).send({
+        status: 403,
+        message: 'Forbidden request, you are not an artist.',
+      });
+    }
+
+    let album = await Album.findOne({ Name, Artist: user.isArtist.StageName });
+    // No album of such name
+    if (!album) {
+      return res.status(404).send({
+        status: 404,
+        message: `Album not found with name ${Name}.`,
+      });
+    }
+
+    album.Cover = `/uploads/${req.file.filename}`;
+
+    await album.save();
+
+    let songsOfAlbum = await Song.find({
+      Album: album.Name,
+      Artist: user.isArtist.StageName,
+    });
+
+    songsOfAlbum.forEach(async (song) => {
+      song.Cover = album.Cover;
+
+      await song.save();
+    });
+
+    res.redirect(`/artists/${album.Artist}/albums/${album.Name}`);
   } catch (error) {
     console.error(error);
     res.status(500).send({ status: 500, message: 'Internal server error.' });

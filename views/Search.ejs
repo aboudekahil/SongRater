@@ -5,8 +5,8 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="icon" type="image/x-icon" href="/images/favicon.ico" />
-    <link href="/styles/Header.css" rel="stylesheet" />
     <link href="/styles/Styles.css" rel="stylesheet" />
+    <link href="/styles/Header.css" rel="stylesheet" />
     <link href="/styles/Search.css" rel="stylesheet" />
     <title>Results for <%= query %></title>
   </head>
@@ -28,7 +28,7 @@
           value="<%=query%>"
         />
       </form>
-      <% if(foundAny){ %>
+      <% if(results.songs.length || results.albums.length || results.artists.length){ %>
       <div class="results">
         <div class="division">
           <h1>Songs</h1>
@@ -58,11 +58,11 @@
           <div>
             <h1>
               <a href="/artists/<%=artist.isArtist.StageName%>"
-                ><%=artist.StageName%></a
+                ><%=artist.isArtist.StageName%></a
               >
             </h1>
             <h2>
-              <a href="/profiles/<%=artist.Name%>"><%=artist.Name%></a>
+              <a href="/profiles/<%=artist.FullName%>"><%=artist.FullName%></a>
             </h2>
           </div>
           <%}%>

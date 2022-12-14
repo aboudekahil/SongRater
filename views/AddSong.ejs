@@ -67,6 +67,18 @@
           class="form-control btn btn-primary"
         />
       </form>
+      <%if(isUpdate){%>
+            <form action="/api/uploadSongCover?Name=<%=song.Name%>" method="post" enctype="multipart/form-data">
+        <label for="cover">Cover</label>
+        <input
+          type="file"
+          id="cover"
+          name="cover"
+          accept="image/png, image/jpeg"
+        />
+        <input type="submit" />
+      </form>
+      <%}%>
     </main>
   </body>
 </html>

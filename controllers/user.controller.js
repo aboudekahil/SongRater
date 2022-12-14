@@ -58,7 +58,7 @@ exports.createUser = async (req, res) => {
     if (error.code === 11000) {
       res.status(409).send({
         status: 409,
-        message: 'Email or username already exists',
+        message: 'Email or Name already exists',
       });
     } else {
       console.error(error);
@@ -281,8 +281,15 @@ exports.updateUser = async (req, res) => {
 
     res.status(204).redirect('/');
   } catch (error) {
-    console.error(error);
-    res.status(500).send({ status: 500, message: 'Internal sevrer error.' });
+    if (error.code === 11000) {
+      res.status(409).send({
+        status: 409,
+        message: 'Name or Email already exists',
+      });
+    } else {
+      console.error(error);
+      res.status(500).send({ status: 500, message: 'Internal sevrer error.' });
+    }
   }
 };
 
@@ -332,6 +339,35 @@ exports.getDiscography = async (req, res) => {
     res
       .status(200)
       .render('Discography', { user, artist, songs, albums, isThisArtist });
+  } catch (error) {
+    console.error(error);
+    res.status(500).send({ status: 500, message: 'Internal server error.' });
+  }
+};
+
+exports.pfpUpload = async (req, res) => {
+  try {
+    if (!req.cookies.uid) {
+      res.status(400).send({ status: 400, message: 'Bad request.' });
+      return;
+    }
+
+    let user = await getLoggedInUser(req);
+
+    // bad session id
+    if (user === null) {
+      res.clearCookie('uid');
+
+      return res.status(500).send({
+        status: 500,
+        message: `user not found with id ${req.cookies.uid}. Please refresh.`,
+      });
+    }
+
+    user.Avatar = `/uploads/${req.file.filename}`;
+
+    await user.save();
+    res.redirect(`/profiles/${user.FullName}`);
   } catch (error) {
     console.error(error);
     res.status(500).send({ status: 500, message: 'Internal server error.' });
