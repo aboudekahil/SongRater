@@ -23,7 +23,7 @@ exports.getHomePage = async (req, res) => {
     if (user === null) {
       res.clearCookie('uid');
 
-      return res.status(500).send({
+      return res.status(500).render('Error', {
         status: 500,
         message: `user not found with id ${req.cookies.uid}. Please refresh.`,
       });
@@ -32,7 +32,7 @@ exports.getHomePage = async (req, res) => {
   } catch (err) {
     // Handle any error that occurred in the query
     console.error(err);
-    res.status(500).send({
+    res.status(500).render('Error', {
       status: 500,
       message: `Internal server occurred`,
     });
@@ -60,7 +60,7 @@ exports.query = async (req, res) => {
     if (user === null) {
       res.clearCookie('uid');
 
-      return res.status(500).send({
+      return res.status(500).render('Error', {
         status: 500,
         message: `user not found with id ${req.cookies.uid}. Please refresh.`,
       });
@@ -96,6 +96,8 @@ exports.query = async (req, res) => {
       .render('Search', { user, query, results: { songs, albums, artists } });
   } catch (error) {
     console.error(error);
-    res.status(500).send({ status: 500, message: 'Internal server error.' });
+    res
+      .status(500)
+      .render('Error', { status: 500, message: 'Internal server error.' });
   }
 };

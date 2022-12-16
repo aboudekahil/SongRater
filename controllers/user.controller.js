@@ -56,13 +56,13 @@ exports.createUser = async (req, res) => {
     res.status(201).redirect('/');
   } catch (error) {
     if (error.code === 11000) {
-      res.status(409).send({
+      res.status(409).render('Error', {
         status: 409,
         message: 'Email or Name already exists',
       });
     } else {
       console.error(error);
-      res.status(500).send({
+      res.status(500).render('Error', {
         status: 500,
         message: `Something wen't wrong`,
       });
@@ -91,7 +91,7 @@ exports.joinPage = async (req, res) => {
       // bad session id
       res.clearCookie('uid');
 
-      return res.status(500).send({
+      return res.status(500).render('Error', {
         status: 500,
         message: `User not found with id ${req.cookies.uid}. Please refresh.`,
       });
@@ -103,7 +103,7 @@ exports.joinPage = async (req, res) => {
   } catch (err) {
     // Handle any error that occurred in the query
     console.error(err);
-    res.status(500).send({
+    res.status(500).render('Error', {
       status: 500,
       message: `Internal server occurred`,
     });
@@ -126,7 +126,9 @@ exports.joinPage = async (req, res) => {
 exports.editProfilePage = async (req, res) => {
   try {
     if (!req.cookies.uid) {
-      return res.status(400).send({ status: 400, message: 'bad request.' });
+      return res
+        .status(400)
+        .render('Error', { status: 400, message: 'bad request.' });
     }
 
     const user = await getLoggedInUser(req);
@@ -136,7 +138,9 @@ exports.editProfilePage = async (req, res) => {
     res.status(200).render('EditProfile', { user, countries, isArtist });
   } catch (error) {
     console.error(error);
-    res.status(500).send({ status: 500, message: 'Internal server error' });
+    res
+      .status(500)
+      .render('Error', { status: 500, message: 'Internal server error' });
   }
 };
 
@@ -154,7 +158,9 @@ exports.editProfilePage = async (req, res) => {
  */
 exports.userSignOut = async (req, res) => {
   if (!req.cookies.uid) {
-    return res.status(403).send({ status: 403, message: 'bad request' });
+    return res
+      .status(403)
+      .render('Error', { status: 403, message: 'bad request' });
   }
 
   res.clearCookie('uid');
@@ -180,7 +186,7 @@ exports.userSignIn = async (req, res) => {
     if (!user) {
       return res
         .status(401)
-        .send({ status: 401, message: 'Wrong credentials' });
+        .render('Error', { status: 401, message: 'Wrong credentials' });
     }
 
     let [sessionId, expiration] = await sessionManager.createSession(
@@ -197,7 +203,9 @@ exports.userSignIn = async (req, res) => {
     res.status(201).redirect('/');
   } catch (error) {
     console.error(error);
-    res.status(500).send({ status: 500, message: 'Internal server error' });
+    res
+      .status(500)
+      .render('Error', { status: 500, message: 'Internal server error' });
   }
 };
 
@@ -217,7 +225,9 @@ exports.getProfile = async (req, res) => {
     let profile = await User.findOne(req.params);
 
     if (!profile) {
-      return res.status(404).send({ status: 404, message: 'User not found.' });
+      return res
+        .status(404)
+        .render('Error', { status: 404, message: 'User not found.' });
     }
 
     let user = await getLoggedInUser(req);
@@ -226,7 +236,7 @@ exports.getProfile = async (req, res) => {
     if (user === null) {
       res.clearCookie('uid');
 
-      return res.status(500).send({
+      return res.status(500).render('Error', {
         status: 500,
         message: `user not found with id ${req.cookies.uid}. Please refresh.`,
       });
@@ -261,7 +271,7 @@ exports.updateUser = async (req, res) => {
     if (user === null) {
       res.clearCookie('uid');
 
-      return res.status(500).send({
+      return res.status(500).render('Error', {
         status: 500,
         message: `user not found with id ${req.cookies.uid}. Please refresh.`,
       });
@@ -282,13 +292,15 @@ exports.updateUser = async (req, res) => {
     res.status(204).redirect('/');
   } catch (error) {
     if (error.code === 11000) {
-      res.status(409).send({
+      res.status(409).render('Error', {
         status: 409,
         message: 'Name or Email already exists',
       });
     } else {
       console.error(error);
-      res.status(500).send({ status: 500, message: 'Internal sevrer error.' });
+      res
+        .status(500)
+        .render('Error', { status: 500, message: 'Internal sevrer error.' });
     }
   }
 };
@@ -315,7 +327,7 @@ exports.getDiscography = async (req, res) => {
     if (user === null) {
       res.clearCookie('uid');
 
-      return res.status(500).send({
+      return res.status(500).render('Error', {
         status: 500,
         message: `user not found with id ${req.cookies.uid}. Please refresh.`,
       });
@@ -325,7 +337,7 @@ exports.getDiscography = async (req, res) => {
     if (!artist) {
       return res
         .status(404)
-        .send({ status: 404, message: 'Artist not found.' });
+        .render('Error', { status: 404, message: 'Artist not found.' });
     }
 
     const songs = await Song.find({ Artist: StageName });
@@ -341,14 +353,16 @@ exports.getDiscography = async (req, res) => {
       .render('Discography', { user, artist, songs, albums, isThisArtist });
   } catch (error) {
     console.error(error);
-    res.status(500).send({ status: 500, message: 'Internal server error.' });
+    res
+      .status(500)
+      .render('Error', { status: 500, message: 'Internal server error.' });
   }
 };
 
 exports.pfpUpload = async (req, res) => {
   try {
     if (!req.cookies.uid) {
-      res.status(400).send({ status: 400, message: 'Bad request.' });
+      res.status(400).render('Error', { status: 400, message: 'Bad request.' });
       return;
     }
 
@@ -358,7 +372,7 @@ exports.pfpUpload = async (req, res) => {
     if (user === null) {
       res.clearCookie('uid');
 
-      return res.status(500).send({
+      return res.status(500).render('Error', {
         status: 500,
         message: `user not found with id ${req.cookies.uid}. Please refresh.`,
       });
@@ -370,6 +384,8 @@ exports.pfpUpload = async (req, res) => {
     res.redirect(`/profiles/${user.FullName}`);
   } catch (error) {
     console.error(error);
-    res.status(500).send({ status: 500, message: 'Internal server error.' });
+    res
+      .status(500)
+      .render('Error', { status: 500, message: 'Internal server error.' });
   }
 };

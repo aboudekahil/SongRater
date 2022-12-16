@@ -21,3 +21,17 @@ form {
   justify-content: center;
   align-items: center;
 }
+
+.found {
+  display: flex;
+  gap: 5px;
+}
+
+.result {
+  padding: 10px;
+}
+
+.division img {
+  width: 300px;
+  aspect-ratio: 1;
+}

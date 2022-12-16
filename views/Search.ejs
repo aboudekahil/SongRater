@@ -28,7 +28,8 @@
           value="<%=query%>"
         />
       </form>
-      <% if(results.songs.length || results.albums.length || results.artists.length){ %>
+      <% if(results.songs.length || results.albums.length ||
+      results.artists.length){ %>
       <div class="results">
         <div class="division">
           <h1>Songs</h1>
@@ -43,14 +44,16 @@
         </div>
         <div class="division">
           <h1>Albums</h1>
-          <% for(let album of results.albums) { %>
-          <div>
-            <img src="<%=album.Cover%>" />
-            <a href="/artists/<%=album.Artist%>/albums/<%=album.Name%>">
-              <h1><%=album.Name%></h1>
-            </a>
+          <div class="found">
+            <% for(let album of results.albums) { %>
+            <div class="result">
+              <img src="<%=album.Cover%>" />
+              <a href="/artists/<%=album.Artist%>/albums/<%=album.Name%>">
+                <h1><%=album.Name%></h1>
+              </a>
+            </div>
+            <%}%>
           </div>
-          <%}%>
         </div>
         <div class="division">
           <h1>Artists</h1>

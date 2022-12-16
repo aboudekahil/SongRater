@@ -25,7 +25,7 @@ exports.addAlbumPage = async (req, res) => {
     if (user === null) {
       res.clearCookie('uid');
 
-      return res.status(500).send({
+      return res.status(500).render('Error', {
         status: 500,
         message: `User not found with id ${req.cookies.uid}. Please refresh.`,
       });
@@ -33,7 +33,7 @@ exports.addAlbumPage = async (req, res) => {
 
     // Not an artist
     if (!user.isArtist || JSON.stringify(user.isArtist) === '{}') {
-      return res.status(403).send({
+      return res.status(403).render('Error', {
         status: 403,
         message: 'Forbidden request, you are not an artist.',
       });
@@ -42,7 +42,9 @@ exports.addAlbumPage = async (req, res) => {
     res.status(200).render('AddAlbum', { user, isUpdate: false });
   } catch (error) {
     console.error(error);
-    res.status(500).send({ status: 500, message: 'Internal server error' });
+    res
+      .status(500)
+      .render('Error', { status: 500, message: 'Internal server error' });
   }
 };
 
@@ -68,7 +70,7 @@ exports.updateAlbumPage = async (req, res) => {
     if (user === null) {
       res.clearCookie('uid');
 
-      return res.status(500).send({
+      return res.status(500).render('Error', {
         status: 500,
         message: `User not found with id ${req.cookies.uid}. Please refresh.`,
       });
@@ -76,7 +78,7 @@ exports.updateAlbumPage = async (req, res) => {
 
     // Not an artist
     if (!user.isArtist || JSON.stringify(user.isArtist) === '{}') {
-      return res.status(403).send({
+      return res.status(403).render('Error', {
         status: 403,
         message: 'Forbidden request, you are not an artist.',
       });
@@ -89,7 +91,7 @@ exports.updateAlbumPage = async (req, res) => {
 
     // no album of such name
     if (!album) {
-      return res.status(404).send({
+      return res.status(404).render('Error', {
         status: 404,
         message: 'Album not found in your discography',
       });
@@ -98,7 +100,9 @@ exports.updateAlbumPage = async (req, res) => {
     res.status(200).render('AddAlbum', { user, album, isUpdate: true });
   } catch (error) {
     console.error(error);
-    res.status(500).send({ status: 500, message: 'Internal server error' });
+    res
+      .status(500)
+      .render('Error', { status: 500, message: 'Internal server error' });
   }
 };
 
@@ -123,7 +127,7 @@ exports.createAlbum = async (req, res) => {
     if (user === null) {
       res.clearCookie('uid');
 
-      return res.status(500).send({
+      return res.status(500).render('Error', {
         status: 500,
         message: `User not found with id ${req.cookies.uid}. Please refresh.`,
       });
@@ -131,7 +135,7 @@ exports.createAlbum = async (req, res) => {
 
     // Not an artist
     if (!user.isArtist || JSON.stringify(user.isArtist) === '{}') {
-      return res.status(403).send({
+      return res.status(403).render('Error', {
         status: 403,
         message: 'Forbidden request, you are not an artist.',
       });
@@ -173,7 +177,7 @@ exports.deleteAlbum = async (req, res) => {
     if (user === null) {
       res.clearCookie('uid');
 
-      return res.status(500).send({
+      return res.status(500).render('Error', {
         status: 500,
         message: `User not found with id ${req.cookies.uid}. Please refresh.`,
       });
@@ -181,7 +185,7 @@ exports.deleteAlbum = async (req, res) => {
 
     // Not an artist
     if (!user.isArtist || JSON.stringify(user.isArtist) === '{}') {
-      return res.status(403).send({
+      return res.status(403).render('Error', {
         status: 403,
         message: 'Forbidden request, you are not an artist.',
       });
@@ -191,14 +195,18 @@ exports.deleteAlbum = async (req, res) => {
 
     // No such album
     if (!album) {
-      return res.status(404).send({ status: 404, message: 'Album not found.' });
+      return res
+        .status(404)
+        .render('Error', { status: 404, message: 'Album not found.' });
     }
 
     await album.remove();
     res.status(200).redirect(`/artists/${user.isArtist.StageName}`);
   } catch (error) {
     console.error(error);
-    res.status(500).send({ status: 500, message: 'Internal server error.' });
+    res
+      .status(500)
+      .render('Error', { status: 500, message: 'Internal server error.' });
   }
 };
 
@@ -222,7 +230,7 @@ exports.updateAlbum = async (req, res) => {
     if (user === null) {
       res.clearCookie('uid');
 
-      return res.status(500).send({
+      return res.status(500).render('Error', {
         status: 500,
         message: `User not found with id ${req.cookies.uid}. Please refresh.`,
       });
@@ -230,7 +238,7 @@ exports.updateAlbum = async (req, res) => {
 
     // Not an artist
     if (!user.isArtist || JSON.stringify(user.isArtist) === '{}') {
-      return res.status(403).send({
+      return res.status(403).render('Error', {
         status: 403,
         message: 'Forbidden request, you are not an artist.',
       });
@@ -243,7 +251,7 @@ exports.updateAlbum = async (req, res) => {
 
     // No album of such name
     if (!album) {
-      return res.status(404).send({
+      return res.status(404).render('Error', {
         status: 404,
         message: `Album not found with name ${Name}.`,
       });
@@ -256,7 +264,9 @@ exports.updateAlbum = async (req, res) => {
     res.status(201).redirect(`/artists/${user.isArtist.StageName}`);
   } catch (error) {
     console.error(error);
-    res.status(500).send({ status: 500, message: 'Internal server error.' });
+    res
+      .status(500)
+      .render('Error', { status: 500, message: 'Internal server error.' });
   }
 };
 
@@ -281,7 +291,7 @@ exports.getAlbum = async (req, res) => {
     if (user === null) {
       res.clearCookie('uid');
 
-      return res.status(500).send({
+      return res.status(500).render('Error', {
         status: 500,
         message: `User not found with id ${req.cookies.uid}. Please refresh.`,
       });
@@ -290,9 +300,10 @@ exports.getAlbum = async (req, res) => {
     const album = await Album.findOne({ Name, Artist: StageName });
 
     if (!album) {
-      return res
-        .status(404)
-        .send({ status: 404, message: `No album with name ${Name}` });
+      return res.status(404).render('Error', {
+        status: 404,
+        message: `No album with name ${Name}`,
+      });
     }
 
     const songs = await Song.find({ Album: Name, Artist: StageName });
@@ -304,12 +315,19 @@ exports.getAlbum = async (req, res) => {
       reviews.reduce((prev, currSong) => prev + currSong.Stars, 0) /
       reviews.length;
 
-    res
-      .status(200)
-      .render('Album', { user, StageName, album, songs, avgStars, formatTime: toHHMMSS });
+    res.status(200).render('Album', {
+      user,
+      StageName,
+      album,
+      songs,
+      avgStars,
+      formatTime: toHHMMSS,
+    });
   } catch (error) {
     console.error(error);
-    res.status(500).send({ status: 500, message: 'Internal server error.' });
+    res
+      .status(500)
+      .render('Error', { status: 500, message: 'Internal server error.' });
   }
 };
 
@@ -317,7 +335,7 @@ exports.uploadCover = async (req, res) => {
   const { Name } = req.query;
   try {
     if (!req.cookies.uid) {
-      res.status(400).send('Bad request.');
+      res.status(400).render('Error', { status: 400, message: 'Bad request' });
       return;
     }
 
@@ -327,7 +345,7 @@ exports.uploadCover = async (req, res) => {
     if (user === null) {
       res.clearCookie('uid');
 
-      return res.status(500).send({
+      return res.status(500).render('Error', {
         status: 500,
         message: `user not found with id ${req.cookies.uid}. Please refresh.`,
       });
@@ -335,7 +353,7 @@ exports.uploadCover = async (req, res) => {
 
     // Not an artist
     if (!user.isArtist || JSON.stringify(user.isArtist) === '{}') {
-      return res.status(403).send({
+      return res.status(403).render('Error', {
         status: 403,
         message: 'Forbidden request, you are not an artist.',
       });
@@ -344,7 +362,7 @@ exports.uploadCover = async (req, res) => {
     let album = await Album.findOne({ Name, Artist: user.isArtist.StageName });
     // No album of such name
     if (!album) {
-      return res.status(404).send({
+      return res.status(404).render('Error', {
         status: 404,
         message: `Album not found with name ${Name}.`,
       });
@@ -368,6 +386,8 @@ exports.uploadCover = async (req, res) => {
     res.redirect(`/artists/${album.Artist}/albums/${album.Name}`);
   } catch (error) {
     console.error(error);
-    res.status(500).send({ status: 500, message: 'Internal server error.' });
+    res
+      .status(500)
+      .render('Error', { status: 500, message: 'Internal server error.' });
   }
 };

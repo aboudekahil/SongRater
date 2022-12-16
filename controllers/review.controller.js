@@ -24,7 +24,7 @@ exports.createReview = async (req, res) => {
     if (user === null) {
       res.clearCookie('uid');
 
-      return res.status(500).send({
+      return res.status(500).render('Error', {
         status: 500,
         message: `User not found with id ${req.cookies.uid}. Please refresh.`,
       });
@@ -40,7 +40,9 @@ exports.createReview = async (req, res) => {
     res.redirect(`/artists/${Artist}/songs/${Song}`);
   } catch (error) {
     console.error(error);
-    res.status(500).send({ status: 500, message: 'Internal server error.' });
+    res
+      .status(500)
+      .render('Error', { status: 500, message: 'Internal server error.' });
   }
 };
 
@@ -66,7 +68,7 @@ exports.updateReview = async (req, res) => {
     if (user === null) {
       res.clearCookie('uid');
 
-      return res.status(500).send({
+      return res.status(500).render('Error', {
         status: 500,
         message: `User not found with id ${req.cookies.uid}. Please refresh.`,
       });
@@ -79,7 +81,7 @@ exports.updateReview = async (req, res) => {
     });
 
     if (!review) {
-      return res.status(404).send({
+      return res.status(404).render('Error', {
         status: 404,
         message: `You have no reviews for the song ${Song}`,
       });
@@ -92,6 +94,8 @@ exports.updateReview = async (req, res) => {
     res.redirect(`/artists/${Artist}/songs/${Song}`);
   } catch (error) {
     console.error(error);
-    res.status(500).send({ status: 500, message: 'Internal server error.' });
+    res
+      .status(500)
+      .render('Error', { status: 500, message: 'Internal server error.' });
   }
 };
