@@ -1,5 +1,6 @@
+const crypto       = require('crypto');
+const logger       = require('./logger.config');
 const SessionModel = require('../models/session.model');
-const crypto = require('crypto');
 
 class CookieSessionManager {
   /**
@@ -42,7 +43,7 @@ class CookieSessionManager {
       try {
         await userSession.save();
       } catch (error) {
-        console.error(error);
+        logger.error(error);
         return null;
       }
 
@@ -59,7 +60,7 @@ class CookieSessionManager {
       await session.save();
       return [sessionId, expirationTime];
     } catch (err) {
-      console.error(err);
+      logger.error(err);
       return null;
     }
   }
@@ -87,7 +88,7 @@ class CookieSessionManager {
       }
       return session.userId;
     } catch (err) {
-      console.error(err);
+      logger.error(err);
       return null;
     }
   }
@@ -116,7 +117,7 @@ class CookieSessionManager {
 
       return true;
     } catch (err) {
-      console.error(err);
+      logger.error(err);
       return false;
     }
   }

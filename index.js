@@ -1,13 +1,14 @@
 // Requires
 // ----------------------------------------------------------------------------
 require('dotenv').config(); // process env configure
-const express = require('express');
-const path = require('path');
-const routings = require('./config/routers.config');
+const express    = require('express');
+const path       = require('path');
 const bodyParser = require('body-parser');
-const mongoose = require('mongoose');
-const cors = require('cors');
-const cookies = require('cookie-parser');
+const mongoose   = require('mongoose');
+const cors       = require('cors');
+const cookies    = require('cookie-parser');
+const logger     = require('./config/logger.config');
+const routings   = require('./config/routers.config');
 
 // App
 // ----------------------------------------------------------------------------
@@ -25,8 +26,8 @@ mongoose
   .then(() => {
     console.log('Connected to Song Rater database');
   })
-  .catch((err) => {
-    console.error(err);
+  .catch((error) => {
+    logger.error(error);
     console.log('failed to connect to database');
   });
 

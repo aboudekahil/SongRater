@@ -1,10 +1,11 @@
-const express = require('express');
-const sessionManager = require('../config/session.config');
-const User = require('../models/user.model');
-const Country = require('../models/country.model');
-const Song = require('../models/song.model');
-const Album = require('../models/album.model');
+const express         = require('express');
+const sessionManager  = require('../config/session.config');
+const logger          = require('../config/logger.config');
 const getLoggedInUser = require('../utils/getLoggedInUser');
+const User            = require('../models/user.model');
+const Country         = require('../models/country.model');
+const Song            = require('../models/song.model');
+const Album           = require('../models/album.model');
 
 /**
  * @async
@@ -61,7 +62,7 @@ exports.createUser = async (req, res) => {
         message: 'Email or Name already exists',
       });
     } else {
-      console.error(error);
+      logger.error(error);
       res.status(500).render('Error', {
         status: 500,
         message: `Something wen't wrong`,
@@ -102,7 +103,7 @@ exports.joinPage = async (req, res) => {
     res.status(200).render('Joinpage', { countries });
   } catch (err) {
     // Handle any error that occurred in the query
-    console.error(err);
+    logger.error(err);
     res.status(500).render('Error', {
       status: 500,
       message: `Internal server occurred`,
@@ -137,7 +138,7 @@ exports.editProfilePage = async (req, res) => {
 
     res.status(200).render('EditProfile', { user, countries, isArtist });
   } catch (error) {
-    console.error(error);
+    logger.error(error);
     res
       .status(500)
       .render('Error', { status: 500, message: 'Internal server error' });
@@ -202,7 +203,7 @@ exports.userSignIn = async (req, res) => {
 
     res.status(201).redirect('/');
   } catch (error) {
-    console.error(error);
+    logger.error(error);
     res
       .status(500)
       .render('Error', { status: 500, message: 'Internal server error' });
@@ -244,7 +245,7 @@ exports.getProfile = async (req, res) => {
 
     res.render('Profile', { profile, user });
   } catch (error) {
-    console.error(error);
+    logger.error(error);
   }
 };
 
@@ -297,7 +298,7 @@ exports.updateUser = async (req, res) => {
         message: 'Name or Email already exists',
       });
     } else {
-      console.error(error);
+      logger.error(error);
       res
         .status(500)
         .render('Error', { status: 500, message: 'Internal sevrer error.' });
@@ -352,7 +353,7 @@ exports.getDiscography = async (req, res) => {
       .status(200)
       .render('Discography', { user, artist, songs, albums, isThisArtist });
   } catch (error) {
-    console.error(error);
+    logger.error(error);
     res
       .status(500)
       .render('Error', { status: 500, message: 'Internal server error.' });
@@ -395,7 +396,7 @@ exports.pfpUpload = async (req, res) => {
     await user.save();
     res.redirect(`/profiles/${user.FullName}`);
   } catch (error) {
-    console.error(error);
+    logger.error(error);
     res
       .status(500)
       .render('Error', { status: 500, message: 'Internal server error.' });
