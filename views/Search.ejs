@@ -31,17 +31,21 @@
       <% if(results.songs.length || results.albums.length ||
       results.artists.length){ %>
       <div class="results">
+        <%if(results.songs.length){%>
         <div class="division">
           <h1>Songs</h1>
-          <% for(let song of results.songs) { %>
-          <div>
-            <img src="<%=song.Cover%>" />
-            <a href="/artists/<%=song.Artist%>/songs/<%=song.Name%>">
-              <h1><%=song.Name%></h1>
-            </a>
+          <div class="found">
+            <% for(let song of results.songs) { %>
+            <div>
+              <img src="<%=song.Cover%>" />
+              <a href="/artists/<%=song.Artist%>/songs/<%=song.Name%>">
+                <h1><%=song.Name%></h1>
+              </a>
+            </div>
+            <%}%>
           </div>
-          <%}%>
         </div>
+        <%}%> <%if(results.albums.length){%>
         <div class="division">
           <h1>Albums</h1>
           <div class="found">
@@ -55,21 +59,28 @@
             <%}%>
           </div>
         </div>
+        <%}%> <%if(results.artists.length){%>
         <div class="division">
           <h1>Artists</h1>
-          <% for(let artist of results.artists) { %>
-          <div>
-            <h1>
-              <a href="/artists/<%=artist.isArtist.StageName%>"
-                ><%=artist.isArtist.StageName%></a
-              >
-            </h1>
-            <h2>
-              <a href="/profiles/<%=artist.FullName%>"><%=artist.FullName%></a>
-            </h2>
+          <div class="found">
+            <% for(let artist of results.artists) { %>
+            <div>
+              <img src="<%=artist.Avatar%>" />
+              <h1>
+                <a href="/artists/<%=artist.isArtist.StageName%>"
+                  ><%=artist.isArtist.StageName%></a
+                >
+              </h1>
+              <h2>
+                <a href="/profiles/<%=artist.FullName%>"
+                  ><%=artist.FullName%></a
+                >
+              </h2>
+            </div>
+            <%}%>
           </div>
-          <%}%>
         </div>
+        <%}%>
       </div>
       <%} else {%>
       <div class="noFound">

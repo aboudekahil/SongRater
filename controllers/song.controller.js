@@ -343,6 +343,18 @@ exports.getSong = async (req, res) => {
   }
 };
 
+/**
+ * @async
+ * @function
+ * Handles the upload of the song cover
+ *
+ * @param {express.Request} req - The request object containing the updated
+ * artist Name.
+ * @param {express.Response} res - The response object
+ *
+ * @returns {undefined} - This function will update the song cover of a song or
+ * render any errors if they occurr
+ */
 exports.uploadCover = async (req, res) => {
   const { Name } = req.query;
   try {
@@ -392,6 +404,18 @@ exports.uploadCover = async (req, res) => {
   }
 };
 
+/**
+ * @async
+ * @function
+ *
+ * A function that gets a track from Last.fm based on a given name and artist.
+ * The track is then saved to the database and the user is redirected to the track page.
+ *
+ * @param {express.Request} req
+ * @param {express.Response} res
+ *
+ * @returns {undefined} The user is redirected to the track page.
+ */
 exports.getFromLastFm = async (req, res) => {
   const { Name } = req.body;
   try {

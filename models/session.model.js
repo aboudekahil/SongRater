@@ -15,6 +15,11 @@ const sessionSchema = new mongoose.Schema({
     type: Date,
     required: true,
   },
+  loginCount: {
+    type: Number,
+    required: true,
+    default: 1
+  },
 });
 
 module.exports = mongoose.model('Session', sessionSchema);

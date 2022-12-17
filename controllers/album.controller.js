@@ -331,6 +331,18 @@ exports.getAlbum = async (req, res) => {
   }
 };
 
+/**
+ * @async
+ * @function
+ * Handles the upload of the cover of an album
+ *
+ * @param {express.Request} req - The request object containing the updated
+ * artist Name.
+ * @param {express.Response} res - The response object
+ *
+ * @returns {undefined} - This function will update the cover of an album and
+ * its songs or render any errors if they occurr
+ */
 exports.uploadCover = async (req, res) => {
   const { Name } = req.query;
   try {

@@ -36,7 +36,16 @@ class CookieSessionManager {
 
     const expirationTime = Date.now() + expiration * 1000;
 
-    if ((await this.getUserId(sessionId)) !== null) {
+    let userSession = await this.Session.findOne({ sessionId });
+    if (userSession !== null) {
+      userSession.loginCount += 1;
+      try {
+        await userSession.save();
+      } catch (error) {
+        console.error(error);
+        return null;
+      }
+
       return [sessionId, expirationTime];
     }
 
@@ -93,10 +102,19 @@ class CookieSessionManager {
    * @returns {boolean} `true` if the session was successfully deleted, or `false`
    * if an error occurred or if the session does not exist.
    */
-  async deleteSession(sessionId) {
+  async handleLogout(sessionId) {
     try {
-      const result = await this.Session.deleteOne({ sessionId });
-      return result.ok === 1;
+      let result = await this.Session.findOne({ sessionId });
+
+      if (result.loginCount > 1) {
+        result.loginCount -= 1;
+        await result.save();
+        return;
+      }
+
+      await result.remove();
+
+      return true;
     } catch (err) {
       console.error(err);
       return false;

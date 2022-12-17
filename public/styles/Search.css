@@ -10,9 +10,8 @@ form {
 
 .results {
   flex: 1 auto;
-  display: grid;
-  grid-auto-flow: row;
-  grid-template-rows: 1fr 1fr 1fr;
+  display: flex;
+  flex-direction: column;
 }
 
 .noFound {
@@ -22,16 +21,17 @@ form {
   align-items: center;
 }
 
-.found {
+.found{
   display: flex;
-  gap: 5px;
-}
-
-.result {
-  padding: 10px;
+  overflow: auto;
 }
 
 .division img {
   width: 300px;
   aspect-ratio: 1;
+}
+
+.found > div {
+  padding: 10px;
+  /* border: 1px solid red; */
 }

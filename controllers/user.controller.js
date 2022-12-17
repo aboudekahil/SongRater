@@ -164,7 +164,7 @@ exports.userSignOut = async (req, res) => {
   }
 
   res.clearCookie('uid');
-  sessionManager.deleteSession(req.cookies.uid);
+  sessionManager.handleLogout(req.cookies.uid);
   res.status(200).send({ status: 200, message: 'Signed out successfully.' });
 };
 
@@ -359,6 +359,18 @@ exports.getDiscography = async (req, res) => {
   }
 };
 
+/**
+ * @async
+ * @function
+ * Handles the upload of the users avatar
+ *
+ * @param {express.Request} req - The request object containing the updated
+ * artist Name.
+ * @param {express.Response} res - The response object
+ *
+ * @returns {undefined} - This function will update the avatar of a user or
+ * render any errors if they occurr
+ */
 exports.pfpUpload = async (req, res) => {
   try {
     if (!req.cookies.uid) {
