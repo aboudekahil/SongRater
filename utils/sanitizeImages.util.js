@@ -30,7 +30,7 @@ const sanitizeImages = async () => {
       logger.info(`Deleted ${imageName} from server`);
     });
   } catch (error) {
-    logger.error('Error in sanitize image method');
+    logger.error('Error in sanitize image method - ', error);
   }
 };
 
