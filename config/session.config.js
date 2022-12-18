@@ -1,5 +1,5 @@
-const crypto       = require('crypto');
-const logger       = require('./logger.config');
+const crypto = require('crypto');
+const logger = require('./logger.config');
 const SessionModel = require('../models/session.model');
 
 class CookieSessionManager {
@@ -43,7 +43,7 @@ class CookieSessionManager {
       try {
         await userSession.save();
       } catch (error) {
-        logger.error(error);
+        logger.error(`${__filename} -`, error);
         return null;
       }
 
@@ -59,8 +59,8 @@ class CookieSessionManager {
     try {
       await session.save();
       return [sessionId, expirationTime];
-    } catch (err) {
-      logger.error(err);
+    } catch (error) {
+      logger.error(`${__filename} -`, error);
       return null;
     }
   }
@@ -87,8 +87,8 @@ class CookieSessionManager {
         return null;
       }
       return session.userId;
-    } catch (err) {
-      logger.error(err);
+    } catch (error) {
+      logger.error(`${__filename} -`, error);
       return null;
     }
   }
@@ -116,8 +116,8 @@ class CookieSessionManager {
       await result.remove();
 
       return true;
-    } catch (err) {
-      logger.error(err);
+    } catch (error) {
+      logger.error(`${__filename} -`, error);
       return false;
     }
   }

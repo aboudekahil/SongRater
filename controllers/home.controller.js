@@ -1,9 +1,9 @@
-const express         = require('express');
-const logger          = require('../config/logger.config')
-const getLoggedInUser = require('../utils/getLoggedInUser');
-const Album           = require('../models/album.model');
-const Song            = require('../models/song.model');
-const User            = require('../models/user.model');
+const express = require('express');
+const logger = require('../config/logger.config');
+const getLoggedInUser = require('../utils/getLoggedInUser.util');
+const Album = require('../models/album.model');
+const Song = require('../models/song.model');
+const User = require('../models/user.model');
 
 /**
  * @async
@@ -30,9 +30,9 @@ exports.getHomePage = async (req, res) => {
       });
     }
     res.render('Homepage', { user });
-  } catch (err) {
+  } catch (error) {
     // Handle any error that occurred in the query
-    logger.error(err);
+    logger.error(`${__filename} -`, error);
     res.status(500).render('Error', {
       status: 500,
       message: `Internal server occurred`,
@@ -96,7 +96,7 @@ exports.query = async (req, res) => {
       .status(200)
       .render('Search', { user, query, results: { songs, albums, artists } });
   } catch (error) {
-    logger.error(error);
+    logger.error(`${__filename} -`, error);
     res
       .status(500)
       .render('Error', { status: 500, message: 'Internal server error.' });

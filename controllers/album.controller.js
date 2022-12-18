@@ -1,10 +1,10 @@
-const express         = require('express');
-const logger          = require('../config/logger.config');
-const getLoggedInUser = require('../utils/getLoggedInUser');
-const toHHMMSS        = require('../utils/toHHMMSS');
-const Album           = require('../models/album.model');
-const Song            = require('../models/song.model');
-const Review          = require('../models/review.model');
+const express = require('express');
+const logger = require('../config/logger.config');
+const getLoggedInUser = require('../utils/getLoggedInUser.util');
+const toHHMMSS = require('../utils/toHHMMSS.util');
+const Album = require('../models/album.model');
+const Song = require('../models/song.model');
+const Review = require('../models/review.model');
 
 /**
  * @async
@@ -42,7 +42,7 @@ exports.addAlbumPage = async (req, res) => {
 
     res.status(200).render('AddAlbum', { user, isUpdate: false });
   } catch (error) {
-    logger.error(error);
+    logger.error(`${__filename} -`, error);
     res
       .status(500)
       .render('Error', { status: 500, message: 'Internal server error' });
@@ -100,7 +100,7 @@ exports.updateAlbumPage = async (req, res) => {
 
     res.status(200).render('AddAlbum', { user, album, isUpdate: true });
   } catch (error) {
-    logger.error(error);
+    logger.error(`${__filename} -`, error);
     res
       .status(500)
       .render('Error', { status: 500, message: 'Internal server error' });
@@ -152,7 +152,7 @@ exports.createAlbum = async (req, res) => {
     await album.save();
     res.status(200).redirect(`/artists/${user.isArtist.StageName}`);
   } catch (error) {
-    logger.error(error);
+    logger.error(`${__filename} -`, error);
     res.status(505).send({ status: 500, message: 'Internal server error.' });
   }
 };
@@ -204,7 +204,7 @@ exports.deleteAlbum = async (req, res) => {
     await album.remove();
     res.status(200).redirect(`/artists/${user.isArtist.StageName}`);
   } catch (error) {
-    logger.error(error);
+    logger.error(`${__filename} -`, error);
     res
       .status(500)
       .render('Error', { status: 500, message: 'Internal server error.' });
@@ -264,7 +264,7 @@ exports.updateAlbum = async (req, res) => {
     await album.save();
     res.status(201).redirect(`/artists/${user.isArtist.StageName}`);
   } catch (error) {
-    logger.error(error);
+    logger.error(`${__filename} -`, error);
     res
       .status(500)
       .render('Error', { status: 500, message: 'Internal server error.' });
@@ -325,7 +325,7 @@ exports.getAlbum = async (req, res) => {
       formatTime: toHHMMSS,
     });
   } catch (error) {
-    logger.error(error);
+    logger.error(`${__filename} -`, error);
     res
       .status(500)
       .render('Error', { status: 500, message: 'Internal server error.' });
@@ -398,7 +398,7 @@ exports.uploadCover = async (req, res) => {
 
     res.redirect(`/artists/${album.Artist}/albums/${album.Name}`);
   } catch (error) {
-    logger.error(error);
+    logger.error(`${__filename} -`, error);
     res
       .status(500)
       .render('Error', { status: 500, message: 'Internal server error.' });

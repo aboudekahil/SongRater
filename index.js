@@ -1,14 +1,16 @@
 // Requires
 // ----------------------------------------------------------------------------
 require('dotenv').config(); // process env configure
-const express    = require('express');
-const path       = require('path');
+const express = require('express');
+const path = require('path');
 const bodyParser = require('body-parser');
-const mongoose   = require('mongoose');
-const cors       = require('cors');
-const cookies    = require('cookie-parser');
-const logger     = require('./config/logger.config');
-const routings   = require('./config/routers.config');
+const mongoose = require('mongoose');
+const cors = require('cors');
+const cookies = require('cookie-parser');
+const cron = require('node-cron');
+const logger = require('./config/logger.config');
+const routings = require('./config/routers.config');
+const sanitizeImages = require('./utils/sanitizeImages.util');
 
 // App
 // ----------------------------------------------------------------------------
@@ -27,7 +29,7 @@ mongoose
     console.log('Connected to Song Rater database');
   })
   .catch((error) => {
-    logger.error(error);
+    logger.error(`${__filename} -`, error);
     console.log('failed to connect to database');
   });
 
@@ -49,6 +51,11 @@ console.log(`Listening on http://localhost:${process.env.PORT}`);
 // Host static files
 // ----------------------------------------------------------------------------
 app.use(express.static(path.join(__dirname, 'public')));
+
+// Clean images
+// ----------------------------------------------------------------------------
+(async () => await sanitizeImages())();
+cron.schedule('* * 23 * *', sanitizeImages);
 
 // 404 Page Not Found
 // ----------------------------------------------------------------------------

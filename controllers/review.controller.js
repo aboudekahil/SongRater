@@ -1,7 +1,7 @@
-const express         = require('express');
-const logger          = require('../config/logger.config');
-const getLoggedInUser = require('../utils/getLoggedInUser');
-const Review          = require('../models/review.model');
+const express = require('express');
+const logger = require('../config/logger.config');
+const getLoggedInUser = require('../utils/getLoggedInUser.util');
+const Review = require('../models/review.model');
 
 /**
  * @async
@@ -40,7 +40,7 @@ exports.createReview = async (req, res) => {
     await review.save();
     res.redirect(`/artists/${Artist}/songs/${Song}`);
   } catch (error) {
-    logger.error(error);
+    logger.error(`${__filename} -`, error);
     res
       .status(500)
       .render('Error', { status: 500, message: 'Internal server error.' });
@@ -94,7 +94,7 @@ exports.updateReview = async (req, res) => {
     await review.save();
     res.redirect(`/artists/${Artist}/songs/${Song}`);
   } catch (error) {
-    logger.error(error);
+    logger.error(`${__filename} -`, error);
     res
       .status(500)
       .render('Error', { status: 500, message: 'Internal server error.' });

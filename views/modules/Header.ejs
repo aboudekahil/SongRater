@@ -53,6 +53,7 @@
     </ul>
   </nav>
 </header>
+<%if(user){%>
 <script defer>
   let dropdown = document.querySelector('.user');
 
@@ -73,3 +74,4 @@
     location.reload();
   });
 </script>
+<%}%>

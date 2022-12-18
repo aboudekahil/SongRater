@@ -1,0 +1,24 @@
+.artistHeader {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.results {
+  display: flex;
+}
+
+.result img {
+  width: 300px;
+  aspect-ratio: 1;
+}
+
+.result{
+  display: flex;
+  flex-direction: column;
+  align-content: center;
+  text-align: center;
+  max-width: 300px;
+  gap: 5px;
+  padding: 10px;
+}
