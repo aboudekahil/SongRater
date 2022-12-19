@@ -18,7 +18,9 @@
 
       <h1><%= profile.FullName%></h1>
       <h2><%= profile.Email%></h2>
-
+      <a href="/<%=profile.FullName%>/playlists"
+        ><%=profile.FullName%>'s lists</a
+      >
       <%if(user.FullName === profile.FullName){%>
       <form action="/api/uploadPfp" method="post" enctype="multipart/form-data">
         <label for="avatar">Avatar</label>

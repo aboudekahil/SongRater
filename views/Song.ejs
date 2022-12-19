@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <title><%= song.song_name %></title>
+    <title><%= song.Name %></title>
     <meta charset="utf-8" />
     <meta
       name="viewport"
@@ -17,6 +17,11 @@
     <link href="/styles/Styles.css" rel="stylesheet" />
     <link href="/styles/Header.css" rel="stylesheet" />
     <link href="/styles/Song.css" rel="stylesheet" />
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+      crossorigin="anonymous"
+    ></script>
   </head>
 
   <body>
@@ -40,6 +45,14 @@
           >
         </h4>
         <%}%>
+        <button
+          type="button"
+          class="btn btn-primary"
+          data-bs-toggle="modal"
+          data-bs-target="#playlistModal"
+        >
+          Add to playlist
+        </button>
       </div>
       <div>
         <% if (!reviews.length) {%>
@@ -110,7 +123,84 @@
       </div>
       <%}%>
     </main>
+    <!-- Modal -->
+    <div
+      class="modal fade"
+      id="playlistModal"
+      tabindex="-1"
+      aria-labelledby="playlistModalLabel"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="playlistModalLabel">Modal title</h5>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+              aria-label="Close"
+            ></button>
+          </div>
+          <div class="modal-body"></div>
+          <div class="modal-footer">
+            <a id="createP" href="#">Create playlist</a
+            ><input
+              id="pText"
+              class="form-control hidden"
+              placeholder="playlist name"
+              type="text"
+            />
+            <button
+              type="button"
+              class="btn btn-secondary"
+              data-bs-dismiss="modal"
+            >
+              Close
+            </button>
+            <button id="addP" type="button" class="btn btn-primary hidden">
+              Create
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
     <script defer>
+      let addEvents = () => {
+        document.querySelectorAll('.form-check-input').forEach((el) => {
+          console.log('a');
+          el.addEventListener('click', async (e) => {
+            console.log('a');
+            if (e.currentTarget.checked) {
+              await fetch('/api/addToPlaylist', {
+                method: 'POST',
+                headers: {
+                  Accept: 'application/json',
+                  'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                  Name: '<%= song.Name %>',
+                  Artist: '<%=song.Artist %>',
+                  PlaylistName: e.currentTarget.nextElementSibling.innerText,
+                }),
+              });
+            } else {
+              await fetch('/api/removeFromPlaylist', {
+                method: 'POST',
+                headers: {
+                  Accept: 'application/json',
+                  'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                  Name: '<%= song.Name %>',
+                  Artist: '<%=song.Artist %>',
+                  PlaylistName: e.currentTarget.nextElementSibling.innerText,
+                }),
+              });
+            }
+          });
+        });
+      };
       document
         .querySelector('input[type="range"]')
         .addEventListener('input', (e) => {
@@ -118,6 +208,56 @@
             'label[for="star"]'
           ).textContent = `Rate (${e.currentTarget.value}/5)`;
         });
+
+      document
+        .querySelector('body > main > div:nth-child(1) > button')
+        .addEventListener(
+          'click',
+          async (e) => {
+            let playlists = await fetch('/api/getUserPlaylists', {
+              method: 'POST',
+              headers: {
+                Accept: 'application/json',
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({
+                SongName: '<%= song.Name %>',
+                Checkboxes: true,
+              }),
+            });
+
+            let data = (await playlists.json()).data;
+
+            document.querySelector(
+              '#playlistModal > div > div > div.modal-body'
+            ).innerHTML += data;
+
+            addEvents();
+          },
+          { once: true }
+        );
+
+      let playlistName = document.querySelector('#pText');
+      let createButton = document.querySelector('#addP');
+      document.querySelector('#createP').addEventListener('click', (e) => {
+        e.target.classList.toggle('hidden');
+        playlistName.classList.toggle('hidden');
+        createButton.classList.toggle('hidden');
+      });
+
+      createButton.addEventListener('click', async (e) => {
+        await fetch('/api/createPlaylist', {
+          method: 'POST',
+          headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            Name: playlistName.value,
+          }),
+        });
+        location.reload();
+      });
     </script>
   </body>
 </html>

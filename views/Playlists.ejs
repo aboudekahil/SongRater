@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title><%=userPlaylist.FullName%>'s playlists</title>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, shrink-to-fit=no"
+    />
+    <link rel="icon" type="image/x-icon" href="/images/favicon.ico" />
+
+    <link href="/styles/Styles.css" rel="stylesheet" />
+    <link href="/styles/Header.css" rel="stylesheet" />
+    <link href="/styles/Playlist.css" rel="stylesheet" />
+  </head>
+
+  <body>
+    <%-include('./modules/Header', {user})%>
+    <main>
+      <h1><%=userPlaylist.FullName%>'s playlists:</h1>
+      <div style="flex-direction: column;" class="results">
+        <%for(const playlist of playlists){%>
+        <div class="result">
+          <a href="/<%=userPlaylist.FullName%>/playlists/<%=playlist.Name%>"
+            ><%=playlist.Name%></a
+          >
+        </div>
+        <%}%> <%if(!playlists.length){%>
+        <h3>No playlist by <%=playlist.Name%> yet.</h3>
+        <%}%>
+      </div>
+    </main>
+  </body>
+</html>

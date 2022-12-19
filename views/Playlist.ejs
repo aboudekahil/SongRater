@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title><%= playlist.Name %></title>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, shrink-to-fit=no"
+    />
+    <link rel="icon" type="image/x-icon" href="/images/favicon.ico" />
+
+    <link href="/styles/Styles.css" rel="stylesheet" />
+    <link href="/styles/Header.css" rel="stylesheet" />
+    <link href="/styles/Playlist.css" rel="stylesheet" />
+  </head>
+
+  <body>
+    <%-include('./modules/Header', {user})%>
+    <main>
+      <h1>Playlist: <%=playlist.Name%></h1>
+      <div class="results">
+        <%for(const song of songs){%>
+        <div class="result">
+          <img src="<%=song.Cover%>" alt="<%=song.Name%>" />
+          <a href="/artists/<%=song.Artist%>/songs/<%=song.Name%>"
+            ><%=song.Name%></a
+          >
+        </div>
+        <%}%> <%if(!songs.length){%>
+        <h3>Empty playlist</h3>
+        <%}%>
+      </div>
+    </main>
+    
+  </body>
+</html>
