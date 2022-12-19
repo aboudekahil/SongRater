@@ -9,8 +9,8 @@ main {
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 100%;
   overflow: hidden;
+  flex-direction: column;
   width: 100vw;
 }
 

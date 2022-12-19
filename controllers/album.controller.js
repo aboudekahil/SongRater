@@ -152,8 +152,17 @@ exports.createAlbum = async (req, res) => {
     await album.save();
     res.status(200).redirect(`/artists/${user.isArtist.StageName}`);
   } catch (error) {
-    logger.error(`${__filename} -`, error);
-    res.status(505).send({ status: 500, message: 'Internal server error.' });
+    if (error.code === 11000) {
+      res.status(409).render('Error', {
+        status: 409,
+        message: 'Album name for artist already exists',
+      });
+    } else {
+      logger.error(`${__filename} -`, error);
+      res
+        .status(500)
+        .render('Error', { status: 500, message: 'Internal sevrer error.' });
+    }
   }
 };
 
@@ -264,10 +273,17 @@ exports.updateAlbum = async (req, res) => {
     await album.save();
     res.status(201).redirect(`/artists/${user.isArtist.StageName}`);
   } catch (error) {
-    logger.error(`${__filename} -`, error);
-    res
-      .status(500)
-      .render('Error', { status: 500, message: 'Internal server error.' });
+    if (error.code === 11000) {
+      res.status(409).render('Error', {
+        status: 409,
+        message: 'Album name for artist already exists',
+      });
+    } else {
+      logger.error(`${__filename} -`, error);
+      res
+        .status(500)
+        .render('Error', { status: 500, message: 'Internal sevrer error.' });
+    }
   }
 };
 

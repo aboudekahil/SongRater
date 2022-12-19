@@ -45,10 +45,17 @@ exports.addSongPage = async (req, res) => {
 
     res.status(200).render('AddSong', { user, albums, isUpdate: false });
   } catch (error) {
-    logger.error(`${__filename} -`, error);
-    res
-      .status(500)
-      .render('Error', { status: 500, message: 'Internal server error' });
+    if (error.code === 11000) {
+      res.status(409).render('Error', {
+        status: 409,
+        message: 'Song name for artist already exists',
+      });
+    } else {
+      logger.error(`${__filename} -`, error);
+      res
+        .status(500)
+        .render('Error', { status: 500, message: 'Internal sevrer error.' });
+    }
   }
 };
 
@@ -101,10 +108,17 @@ exports.updateSongPage = async (req, res) => {
 
     res.status(200).render('AddSong', { user, albums, song, isUpdate: true });
   } catch (error) {
-    logger.error(`${__filename} -`, error);
-    res
-      .status(500)
-      .render('Error', { status: 500, message: 'Internal server error' });
+    if (error.code === 11000) {
+      res.status(409).render('Error', {
+        status: 409,
+        message: 'Song name for artist already exists',
+      });
+    } else {
+      logger.error(`${__filename} -`, error);
+      res
+        .status(500)
+        .render('Error', { status: 500, message: 'Internal sevrer error.' });
+    }
   }
 };
 

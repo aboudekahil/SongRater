@@ -5,3 +5,9 @@ main {
   flex-direction: column;
   height: 100%;
 }
+
+main > h1, h2, a{
+  margin: 0;
+
+  margin-bottom: 1rem;
+}

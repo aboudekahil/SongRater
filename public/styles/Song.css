@@ -30,3 +30,7 @@ main > div {
   width: 30px;
   border-radius: 999px;
 }
+
+.modal-content{
+  background-color: var(--secondary-color);
+}

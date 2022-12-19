@@ -79,10 +79,11 @@
         <input type="submit" />
       </form>
       <%}else{%>
+        <h2 style="margin: 2rem 0;">Or add from last.fm api</h2>
           <form method="post" action="/api/addSongFm" enctype="application/x-www-form-urlencoded">
             <label for="sName">Song Title</label>
-            <input type="text" name="Name" id="sName" />
-            <input type="submit" />
+            <input class="form-control" type="text" name="Name" id="sName" />
+            <input value="Add form last.fm api" class="form-control btn btn-primary" type="submit" />
           </form>
         <%}%>
     </main>
