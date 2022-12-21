@@ -30,7 +30,7 @@ exports.addSongToPlaylist = async (req, res) => {
     }
 
     let playlist = await Playlist.findOne({
-      User: user._id,
+      Owner: user._id,
       Name: PlaylistName,
     });
 
@@ -86,7 +86,7 @@ exports.removeSongFromPlaylist = async (req, res) => {
     }
 
     let playlist = await Playlist.findOne({
-      User: user._id,
+      Owner: user._id,
       Name: PlaylistName,
     });
 
@@ -196,7 +196,7 @@ exports.deletePlaylist = async (req, res) => {
       });
     }
 
-    let playlist = await Playlist.findOne({ Name, User: user._id });
+    let playlist = await Playlist.findOne({ Name, Owner: user._id });
     await playlist.remove();
     res.status(200).redirect('back');
   } catch (error) {
@@ -232,7 +232,7 @@ exports.getUserPlaylists = async (req, res) => {
       });
     }
 
-    let playlists = await Playlist.find({ User: user._id });
+    let playlists = await Playlist.find({ Owner: user._id });
     let song = await Song.findOne({ Name: SongName });
 
     if (Checkboxes) {
@@ -294,7 +294,7 @@ exports.getPlaylistPage = async (req, res) => {
       });
     }
 
-    const playlist = await Playlist.findOne({ Name, User: userPlaylist._id });
+    const playlist = await Playlist.findOne({ Name, Owner: userPlaylist._id });
     let songs = await Promise.all(
       playlist.Songs.map(async (s) => {
         return await Song.findById(s);
@@ -345,9 +345,11 @@ exports.getPlaylistsPage = async (req, res) => {
       });
     }
 
-    const playlists = await Playlist.find({ User: userPlaylist._id });
+    const playlists = await Playlist.find({ Owner: userPlaylist._id });
 
-    res.status(200).render('Playlists', { playlists, userPlaylist, user });
+    res
+      .status(200)
+      .render('Playlists', { playlists, FullName, userPlaylist, user });
   } catch (error) {
     logger.error(`${__filename} -`, error);
     res

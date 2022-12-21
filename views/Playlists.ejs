@@ -18,7 +18,7 @@
     <%-include('./modules/Header', {user})%>
     <main>
       <h1><%=userPlaylist.FullName%>'s playlists:</h1>
-      <div style="flex-direction: column;" class="results">
+      <div style="flex-direction: column" class="results">
         <%for(const playlist of playlists){%>
         <div class="result">
           <a href="/<%=userPlaylist.FullName%>/playlists/<%=playlist.Name%>"
@@ -26,7 +26,7 @@
           >
         </div>
         <%}%> <%if(!playlists.length){%>
-        <h3>No playlist by <%=playlist.Name%> yet.</h3>
+        <h3>No playlist by <%=FullName%> yet.</h3>
         <%}%>
       </div>
     </main>
