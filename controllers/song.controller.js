@@ -474,7 +474,7 @@ exports.getFromLastFm = async (req, res) => {
       ReleaseDate: new Date(),
       Cover: cover
         ? cover.image.at(-1)['#text']
-        : `https://ui-avatars.com/api/name=${match.name}&background=random`,
+        : `https://ui-avatars.com/api/name=${Name}&background=random`,
     });
 
     await song.save();

@@ -59,8 +59,9 @@ exports.createUser = async (req, res) => {
     if (error.code === 11000) {
       res.status(409).render('Error', {
         status: 409,
-        message: 'Email or Name already exists',
+        message: 'Email or Name or Artist Name already exists',
       });
+      logger.error(`${__filename} -`, error);
     } else {
       logger.error(`${__filename} -`, error);
       res.status(500).render('Error', {
